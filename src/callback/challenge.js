@@ -1,34 +1,43 @@
-// instanciamos el XML Sx: require('nombre_consola').nombre_archivo;
-// guardo en la variable el valor del archivo XMLHttpRequest
-let request = require("xmlhttprequest").XMLHttpRequest;
+//Se importa el paquete de XMLHTTPRequest debido a que estamos trabajando con Node y no con
+//el browser. Es importante señalar que al usar Node de esta forma, se debe agregar a
+//package.json las referencias necesarias bajo 'srcipts'
+let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 
-// API, guardamos la api en una variable 
-const API = 'https://rickandmortyapi.com/api/character/';
+const api = 'https://rickandmortyapi.com/api/character/'
 
-// funcion que nos permite traer la informacion desde nuestra API, recibe un callback y desencadena los llamados que necesitamos.
 function fetchData(url_api, callback) {
-    // construimos la peticion por xmlhttprequest generando la referencia al objeto que necesito
-    let datos = new request();
-    // hacemos el llamado a una url 
-    datos.open('GET', url_api, true); /* el true activa el asincronismo  */
-    // escucho lo que hace la conexion 
-    datos.onreadystatechange = function (e) {
-        // validamos para saber si fue exitoso todo
-        if (datos.readyState === 4) {
-            // saber el status 
-            if (datos.status === 200) {
-                // regresamos el callback si todo sale bien, responseText me lo convierte de object a string
-                callback(null, JSON.parse(datos.responseText));
-            } else { /* si las cosas no salen bien le pasamos la url y el estado */
-                const error = new Error('Error' + url_api + ' paso esto: ' + datos.status);
-                // al final retornamos el callback con un msj de error y un null ya que no se desencadena nada 
-                return callback(error, null);
+    let xhttp = new XMLHttpRequest()
+
+    //Abrir o llamar a la url. El parámetro TRUE indica que se ejecutará de forma asíncrona
+    xhttp.open('GET', url_api, true)
+
+    //Cuando cambie el estado de la petición
+    xhttp.onreadystatechange = function(event) {
+        if(xhttp.readyState === 4) {
+            if(xhttp.status === 200) {
+                callback(null, JSON.parse(xhttp.responseText))
+            }else {
+                const error = new Error(`Error ${url_api}`)
+                return callback(error, null)
             }
         }
     }
-    // enviamos la solicitud con send().
-    datos.send();
+    xhttp.send()
 }
+
+fetchData(api, function(error1, data1) {
+    if(error1) return console.error(error1)
+    //Si no hubiera error, hago la petición al primer elemento de la api
+    fetchData(api + data1.results[0].id, function(error2, data2) {
+        if(error2) return console.error(error2)
+        fetchData(data2.origin.url, function(error3, data3) {
+            if(error3) return console.error(error3)
+            console.log(data1.info.count)
+            console.log(data2.name)
+            console.log(data3.dimension)
+        })
+    })
+})
 
 // readyState Holds the status of the XMLHttpRequest.
 // 0: request not initialized

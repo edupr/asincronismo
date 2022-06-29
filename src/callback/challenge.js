@@ -1,6 +1,6 @@
 //Se importa el paquete de XMLHTTPRequest debido a que estamos trabajando con Node y no con
 //el browser. Es importante señalar que al usar Node de esta forma, se debe agregar a
-//package.json las referencias necesarias bajo 'srcipts'
+//package.json las referencias necesarias bajo 'scripts'
 let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 
 const api = 'https://rickandmortyapi.com/api/character/'

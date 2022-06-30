@@ -29,7 +29,6 @@ somethingWillHappen2()
     .then(response => console.log(response))
     .catch(err => console.log(err));
 
-
 // Correr varias Promesas al mismo tiempo:
 Promise.all([somethingWillHappen(), somethingWillHappen2()])
     .then(response => {

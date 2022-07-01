@@ -16,4 +16,4 @@ const anotherFunction = async (url_api) => {
 
 console.log('Before');
 anotherFunction(API);
-console.log('After');
+ console.log('After');
